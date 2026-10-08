@@ -26,7 +26,7 @@ public class UserCreatePost {
 
     @NotEmpty(message = "Birth date cannot be empty")
     @Schema(description = "This is the user birthday",example = "dd/mm/YYYY")
-    @Pattern(regexp = "\\d[01-31]{2}/\\d[01-12]{2}/\\d{4}", message = "Date format invalid ,format dd/mm/yyyy")
+    @Pattern(regexp = "(0[1-9]|[12]\\d|3[01])/(0[1-9]|1[0-2])/\\d{4}", message = "Date format invalid ,format dd/mm/yyyy")
     private String birthDate;
 
     @NotEmpty(message = "Email cannot be empty")
