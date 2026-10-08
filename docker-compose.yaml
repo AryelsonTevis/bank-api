@@ -1,0 +1,14 @@
+services:
+  db:
+    image: mysql
+    container_name: mysqlbank
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - bank_user_data:/var/lib/mysqlbank
+    mem_limit: 512m
+
+volumes:
+  bank_user_data:
