@@ -11,13 +11,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
 
-import java.time.LocalDate;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserCreatePost {
+public class UserPostRequest {
     @NotEmpty(message = "Cpf cannot be empty")
     @Schema(description = "This is the user cpf", example = "01234567891")
     @Pattern(regexp = "\\d{11}|\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}", message = "Cpf must have 11 digits")

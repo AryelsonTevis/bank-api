@@ -1,8 +1,7 @@
 package api.bank.bankapi.service;
 
-import api.bank.bankapi.DTO.UserCreatePost;
-import api.bank.bankapi.domain.User;
-import api.bank.bankapi.exception.ValidationExceptionDetails;
+import api.bank.bankapi.DTO.UserPostRequest;
+import api.bank.bankapi.domain.Users;
 import api.bank.bankapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,11 +20,11 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
-    public List<User> listAllUsers() {
+    public List<Users> listAllUsers() {
         return userRepository.findAll();
     }
 
-    public User saveUser(UserCreatePost userCreatePost) {
+    public Users saveUser(UserPostRequest userCreatePost) {
         String CpfToBeSaved = formatCpf(userCreatePost.getCpf());
         String phoneToBeSaved = formatPhone(userCreatePost.getPhone());
 
@@ -33,14 +32,14 @@ public class UserService {
 
         String passwordEntered = userCreatePost.getPassword();
 
-        User userToBeSaved = User.builder()
+        Users userToBeSaved = Users.builder()
                 .cpf(CpfToBeSaved)
                 .name(userCreatePost.getName())
                 .password(passwordEncoder.encode(passwordEntered))
                 .email(userCreatePost.getEmail())
                 .date_birth(Date.valueOf(dateBirth))
                 .date_joined(Date.valueOf(LocalDate.now()))
-                .phone(phoneToBeSaved).active(true).build();
+                .phone(phoneToBeSaved).build();
 
         return userRepository.save(userToBeSaved);
     }
