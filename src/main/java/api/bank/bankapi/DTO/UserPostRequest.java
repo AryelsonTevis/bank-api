@@ -17,7 +17,7 @@ import org.hibernate.validator.constraints.br.CPF;
 @AllArgsConstructor
 public class UserPostRequest {
     @NotEmpty(message = "Cpf cannot be empty")
-    @Schema(description = "This is the user cpf", example = "01234567891")
+    @Schema(description = "This is the user cpf", example = "01234567891 or 012.345.678-91")
     @Pattern(regexp = "\\d{11}|\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}", message = "Cpf must have 11 digits")
     @CPF(message = "Invalid Cpf")
     private String cpf;
@@ -41,7 +41,7 @@ public class UserPostRequest {
     private String password;
 
     @NotEmpty(message = "Phone cannot be empty")
-    @Schema(description = "This is the user phone number",examples = {"(XX)XXXXX-XXXX","XXXXXXXXXXX"} )
+    @Schema(description = "This is the user phone number",examples = "(XX)XXXXX-XXXX or XXXXXXXXXXX")
     @Pattern(regexp = "^\\(?[1-9]{2}\\)?\\s?(9\\d{4}|[2-5]\\d{3})-?\\d{4}$",
             message = "invalid phone number")
     private String phone;

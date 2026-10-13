@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import java.sql.Date;
 
@@ -22,32 +23,32 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "cpf", unique = true ,nullable = false)
     @NotBlank(message = "The user cpf cannot be empty")
     private String cpf;
 
-    @Column(nullable = false)
+    @Column(name = "name",nullable = false)
     @NotBlank(message = "The user name cannot be empty")
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "password",nullable = false)
     @NotBlank(message = "The user password cannot be empty")
     private String password;
 
-    @Column(nullable = false)
+    @Column(name = "email", unique = true, nullable = false)
     @NotBlank(message = "The user email cannot be empty")
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "date_birth", nullable = false)
     @NotNull(message = "The user date of birth cannot be empty")
     @Past(message = "The birth date must be in the past tense")
     private Date date_birth;
 
     private Date date_joined;
 
-    @Column(nullable = false)
+    @Column(name = "phone", unique = true, nullable = false)
     @NotBlank(message = "The user phone number cannot be empty")
     private String phone;
 
-    private boolean active = true;
+    private boolean active;
 }

@@ -1,6 +1,8 @@
 package api.bank.bankapi.handler;
 
 import api.bank.bankapi.exception.IllegalArgumentExceptionDetails;
+import api.bank.bankapi.exception.ValidationExceptionDetails;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -29,4 +31,10 @@ public class RestExceptionHandler {
         ex.getBindingResult().getFieldErrors().forEach((e -> errors.put(e.getField(), e.getDefaultMessage())));
         return ResponseEntity.badRequest().body(errors);
     }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<IllegalArgumentExceptionDetails>  handleDataIntegrityViolationException(DataIntegrityViolationException dive) {
+        return new ResponseEntity<>(IllegalArgumentExceptionDetails.builder().title("Invalid values")
+                .status(HttpStatus.CONFLICT.value()).details("Any information is invalid").timestamp(LocalDateTime.now()).build(), HttpStatus.CONFLICT);
+    }
+
 }
