@@ -3,7 +3,6 @@ package api.bank.bankapi.repository;
 import api.bank.bankapi.domain.Users;
 import api.bank.bankapi.util.UserCreator;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.UnexpectedTypeException;
 import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +17,7 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 public class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
+
 
     @Test
     @DisplayName("Save persist User when Successful")
@@ -65,5 +65,6 @@ public class UserRepositoryTest {
 
         Assertions.assertThatThrownBy(()-> this.userRepository.save(userWithEmptyPhoneNumber)).isInstanceOf(ConstraintViolationException.class);
     }
+
 
 }

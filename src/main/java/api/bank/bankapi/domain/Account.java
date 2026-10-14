@@ -2,6 +2,7 @@ package api.bank.bankapi.domain;
 
 import api.bank.bankapi.DTO.AccountUserResponse;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,5 +26,6 @@ public class Account {
 
     @ManyToOne
     @JoinColumn(name = "cpf", referencedColumnName = "cpf")
+    @NotNull(message = "Account user not referred")
     private Users users;
 }
