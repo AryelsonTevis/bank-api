@@ -7,9 +7,6 @@ import java.sql.Date;
 import java.time.LocalDate;
 
 public class UserCreator {
-    private static UserRepository userRepository;
-
-
 
     public static Users createUserToBeSaved() {
         return Users.builder()

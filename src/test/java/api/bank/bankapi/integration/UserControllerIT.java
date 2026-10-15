@@ -50,8 +50,7 @@ public class UserControllerIT {
     @DisplayName("Save Returns user when successful")
     void save_ReturnsUser_WhenSuccessful(){
         UserPostRequest userPostRequest = UserPostCreator.createUserPostCreatorForIntegration();
-
-
+        
 
         ResponseEntity<Users> usersResponseEntity = testRestTemplate.postForEntity("/User", userPostRequest, Users.class);
 
