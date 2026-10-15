@@ -10,5 +10,6 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     @Query(value = "SELECT * FROM users WHERE cpf = :cpf and active = 1", nativeQuery = true)
     Users findByCpf(@Param("cpf") String cpf);
 
-
+    @Query(value = "SELECT * FROM users WHERE id = :id and active = 1", nativeQuery = true)
+    Users findByIdActive(@Param("id") Long id);
 }

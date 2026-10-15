@@ -27,9 +27,14 @@ public class UserController {
         return new ResponseEntity<>(userService.login(userLoginPost), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/transfer")
-    @Operation(summary = "Verify the transfer information")
+    @GetMapping(path = "{id}/account_transfer")
+    @Operation(summary = "Check the transfer information")
     public ResponseEntity<AccountUserResponse> verifyTransferInformation(@Valid @RequestBody TargetTransferAccountPost transferAccountPost) {
         return new ResponseEntity<>(userService.transfer(transferAccountPost), HttpStatus.OK);
+    }
+    @PatchMapping(path = "{originId}/transfer")
+    @Operation(summary = "Check the amount to be transfer")
+    public ResponseEntity<LoginUserResponse> verifyTransferAmount(@PathVariable long originId, @Valid @RequestBody TargetTransferAmountAndTargetAccountPost transferAmountPost) {
+        return new ResponseEntity<>(userService.responseToTransferAttempt(originId ,transferAmountPost), HttpStatus.OK);
     }
 }

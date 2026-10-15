@@ -16,4 +16,5 @@ public class LoginUserResponse {
     private String cpf;
     private String balance;
     private String credit;
+
 }
