@@ -1,6 +1,6 @@
 server:
   error:
-    include-stacktrace: neverF
+    include-stacktrace: never
 
 spring:
   config:

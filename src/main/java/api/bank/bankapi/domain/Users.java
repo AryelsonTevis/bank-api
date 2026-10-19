@@ -42,9 +42,9 @@ public class Users {
     @Column(name = "date_birth", nullable = false)
     @NotNull(message = "The user date of birth cannot be empty")
     @Past(message = "The birth date must be in the past tense")
-    private Date date_birth;
+    private Date dateBirth;
 
-    private Date date_joined;
+    private Date dateJoined;
 
     @Column(name = "phone", unique = true, nullable = false)
     @NotBlank(message = "The user phone number cannot be empty")

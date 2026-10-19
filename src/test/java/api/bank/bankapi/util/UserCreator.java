@@ -15,8 +15,8 @@ public class UserCreator {
                 .name("Teste")
                 .password("Teste123!")
                 .email("teste@gmail.com")
-                .date_birth(Date.valueOf("2000-06-01"))
-                .date_joined(Date.valueOf(LocalDate.now()))
+                .dateBirth(Date.valueOf("2000-06-01"))
+                .dateJoined(Date.valueOf(LocalDate.now()))
                 .phone("(34)999999999")
                 .build();
     }
@@ -27,8 +27,8 @@ public class UserCreator {
                 .name("Teste")
                 .password("Teste123!")
                 .email("teste@gmail.com")
-                .date_birth(Date.valueOf("2000-06-01"))
-                .date_joined(Date.valueOf(LocalDate.now()))
+                .dateBirth(Date.valueOf("2000-06-01"))
+                .dateJoined(Date.valueOf(LocalDate.now()))
                 .phone("(34)999999999")
                 .build();
     }
@@ -40,8 +40,8 @@ public class UserCreator {
                 .name("Teste")
                 .password("Teste123!")
                 .email("teste@gmail.com")
-                .date_birth(Date.valueOf("2000-06-01"))
-                .date_joined(Date.valueOf(LocalDate.now()))
+                .dateBirth(Date.valueOf("2000-06-01"))
+                .dateJoined(Date.valueOf(LocalDate.now()))
                 .phone("(34)999999999")
                 .build();
     }
@@ -53,8 +53,8 @@ public class UserCreator {
                 .name("Teste 2")
                 .password("Teste321!")
                 .email("Astaroth@gmail.com")
-                .date_birth(Date.valueOf("2000-06-01"))
-                .date_joined(Date.valueOf(LocalDate.now()))
+                .dateBirth(Date.valueOf("2000-06-01"))
+                .dateJoined(Date.valueOf(LocalDate.now()))
                 .phone("(34)888888888")
                 .build();
     }
@@ -63,11 +63,11 @@ public class UserCreator {
                 .cpf("1234567890")
                 .name("")
                 .password("Teste123!")
-                .date_birth(Date.valueOf("2000-06-01"))
-                .date_joined(Date.valueOf(LocalDate.now()))
+                .dateBirth(Date.valueOf("2000-06-01"))
+                .dateJoined(Date.valueOf(LocalDate.now()))
                 .email("teste@gmail.com")
-                .date_birth(Date.valueOf("2000-06-01"))
-                .date_joined(Date.valueOf(LocalDate.now()))
+                .dateBirth(Date.valueOf("2000-06-01"))
+                .dateJoined(Date.valueOf(LocalDate.now()))
                 .phone("(34)999999999")
                 .build();
     }
@@ -77,8 +77,8 @@ public class UserCreator {
                 .name("Teste")
                 .password("Teste123!")
                 .email("teste@gmail.com")
-                .date_birth(Date.valueOf("2000-06-01"))
-                .date_joined(Date.valueOf(LocalDate.now()))
+                .dateBirth(Date.valueOf("2000-06-01"))
+                .dateJoined(Date.valueOf(LocalDate.now()))
                 .phone("(34)999999999")
                 .build();
     }
@@ -88,8 +88,8 @@ public class UserCreator {
                 .name("Teste")
                 .password("Teste123!")
                 .email("")
-                .date_birth(Date.valueOf("2000-06-01"))
-                .date_joined(Date.valueOf(LocalDate.now()))
+                .dateBirth(Date.valueOf("2000-06-01"))
+                .dateJoined(Date.valueOf(LocalDate.now()))
                 .phone("(34)999999999")
                 .build();
     }
@@ -99,8 +99,8 @@ public class UserCreator {
                 .name("Teste")
                 .password("Teste123!")
                 .email("teste@gmail.com")
-                .date_birth(Date.valueOf("2000-06-01"))
-                .date_joined(Date.valueOf(LocalDate.now()))
+                .dateBirth(Date.valueOf("2000-06-01"))
+                .dateJoined(Date.valueOf(LocalDate.now()))
                 .phone("")
                 .build();
     }
@@ -111,8 +111,8 @@ public class UserCreator {
                 .name("Teste")
                 .password("Teste123!")
                 .email("teste@gmail.com")
-                .date_birth(Date.valueOf("2000-06-01"))
-                .date_joined(Date.valueOf(LocalDate.now()))
+                .dateBirth(Date.valueOf("2000-06-01"))
+                .dateJoined(Date.valueOf(LocalDate.now()))
                 .phone("(34)999999999")
                 .build();
     }
@@ -122,8 +122,8 @@ public class UserCreator {
                 .name("Teste")
                 .password("Teste123!")
                 .email("teste@gmail")
-                .date_birth(Date.valueOf("2000-06-01"))
-                .date_joined(Date.valueOf(LocalDate.now()))
+                .dateBirth(Date.valueOf("2000-06-01"))
+                .dateJoined(Date.valueOf(LocalDate.now()))
                 .phone("(34)999999999")
                 .build();
     }
@@ -133,8 +133,8 @@ public class UserCreator {
                 .name("Teste")
                 .password("Teste123!")
                 .email("teste@gmail.com")
-                .date_birth(Date.valueOf("2000-06-01"))
-                .date_joined(Date.valueOf(LocalDate.now()))
+                .dateBirth(Date.valueOf("2000-06-01"))
+                .dateJoined(Date.valueOf(LocalDate.now()))
                 .phone("999999999")
                 .build();
     }

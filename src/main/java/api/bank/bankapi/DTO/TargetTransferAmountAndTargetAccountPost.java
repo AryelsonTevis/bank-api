@@ -11,6 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,7 +20,7 @@ import org.hibernate.validator.constraints.br.CPF;
 public class TargetTransferAmountAndTargetAccountPost {
     @NotNull(message = "Enter the amount to transfer")
     @Schema(description = "This is the amount for the transfer", example = "10.01")
-    private double amount;
+    private BigDecimal amount;
 
     @NotEmpty(message = "Cpf cannot be empty")
     @Schema(description = "This is the cpf target account", examples = "01234567891 or 012.345.678-91")

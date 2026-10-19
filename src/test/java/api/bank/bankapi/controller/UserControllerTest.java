@@ -1,12 +1,10 @@
 package api.bank.bankapi.controller;
 
-import api.bank.bankapi.DTO.LoginUserResponse;
+import api.bank.bankapi.DTO.UserResponse;
 import api.bank.bankapi.DTO.UserLoginPostRequest;
 import api.bank.bankapi.DTO.UserPostRequest;
-import api.bank.bankapi.domain.Users;
 import api.bank.bankapi.service.UserService;
-import api.bank.bankapi.util.LoginUserResponseCreator;
-import api.bank.bankapi.util.UserCreator;
+import api.bank.bankapi.util.UserResponseCreator;
 import api.bank.bankapi.util.UserPostCreator;
 import api.bank.bankapi.util.UserPostLoginCreator;
 import lombok.extern.log4j.Log4j2;
@@ -24,8 +22,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.http.ResponseEntity;
 
-import java.time.format.DateTimeFormatter;
-
 @Log4j2
 @DisplayName("Tests for User Controller")
 @ExtendWith(MockitoExtension.class)
@@ -41,29 +37,30 @@ class UserControllerTest {
     @BeforeEach
     void setUp(){
         BDDMockito.when(userServiceMock.saveUser(ArgumentMatchers.any(UserPostRequest.class)))
-                .thenReturn(UserCreator.createValidUser());
+                .thenReturn(UserResponseCreator.createUserResponse());
 
         BDDMockito.when(userServiceMock.login(ArgumentMatchers.any(UserLoginPostRequest.class)))
-                .thenReturn(LoginUserResponseCreator.createLoginUserResponse());
+                .thenReturn(UserResponseCreator.createUserResponse());
     }
 
     @Test
-    @DisplayName("Return user when successful")
-    void create_ReturnUser_WhenSuccessful(){
+    @DisplayName("Return user response when create successful")
+    void create_ReturnUserResponse_WhenCreateSuccessful(){
         UserPostRequest userToBeSaved = UserPostCreator.createUserPostCreator();
-        Users user = userController.createUser(userToBeSaved).getBody();
+        UserResponse user = userController.createUser(userToBeSaved).getBody();
 
-        Assertions.assertThat(user).isNotNull().isEqualTo(UserCreator.createValidUser());
+        Assertions.assertThat(user).isNotNull().isEqualTo(UserResponseCreator.createUserResponse());
     }
+
     @Test
-    @DisplayName("Return login user response when successful")
-    void create_ReturnLoginUserResponse_WhenSuccessful(){
+    @DisplayName("Return login user response when login successful")
+    void create_ReturnUserResponse_WhenLoginSuccessful(){
         UserPostRequest userToBeSaved = UserPostCreator.createUserPostCreator();
-        Users user = userController.createUser(userToBeSaved).getBody();
+        UserResponse user = userController.createUser(userToBeSaved).getBody();
 
-        Assertions.assertThat(user).isNotNull().isEqualTo(UserCreator.createValidUser());
+        Assertions.assertThat(user).isNotNull().isEqualTo(UserResponseCreator.createUserResponse());
 
-        ResponseEntity<LoginUserResponse> loginResponse = userController.login(UserPostLoginCreator.createUserPostLoginRequest());
+        ResponseEntity<UserResponse> loginResponse = userController.login(UserPostLoginCreator.createUserPostLoginRequest());
 
         Assertions.assertThat(loginResponse.getBody()).isNotNull();
         Assertions.assertThat(loginResponse.getBody().getCpf()).isEqualTo("***.456.789-**");

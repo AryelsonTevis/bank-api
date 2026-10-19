@@ -6,7 +6,7 @@ public class UserPostCreator {
     public static UserPostRequest createUserPostCreator(){
         return UserPostRequest.builder()
                 .cpf(UserCreator.createUserToBeSaved().getCpf())
-                .birthDate(String.valueOf(UserCreator.createUserToBeSaved().getDate_birth()))
+                .birthDate(String.valueOf(UserCreator.createUserToBeSaved().getDateBirth()))
                 .email(UserCreator.createUserToBeSaved().getEmail())
                 .name(UserCreator.createUserToBeSaved().getName())
                 .password(UserCreator.createUserToBeSaved().getPassword())

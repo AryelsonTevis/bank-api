@@ -1,6 +1,7 @@
 package api.bank.bankapi.integration;
 
 import api.bank.bankapi.DTO.UserPostRequest;
+import api.bank.bankapi.DTO.UserResponse;
 import api.bank.bankapi.domain.Users;
 import api.bank.bankapi.repository.UserRepository;
 import api.bank.bankapi.util.UserCreator;
@@ -50,15 +51,16 @@ public class UserControllerIT {
     @DisplayName("Save Returns user when successful")
     void save_ReturnsUser_WhenSuccessful(){
         UserPostRequest userPostRequest = UserPostCreator.createUserPostCreatorForIntegration();
-        
 
-        ResponseEntity<Users> usersResponseEntity = testRestTemplate.postForEntity("/User", userPostRequest, Users.class);
+        userPostRequest.setBirthDate("31/02/2000");
+
+        ResponseEntity<UserResponse> usersResponseEntity = testRestTemplate.postForEntity("/User", userPostRequest, UserResponse.class);
 
         Assertions.assertThat(usersResponseEntity).isNotNull();
 
         Assertions.assertThat(usersResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         Assertions.assertThat(usersResponseEntity.getBody()).isNotNull();
-        Assertions.assertThat(usersResponseEntity.getBody().getId()).isNotNull();
+        Assertions.assertThat(usersResponseEntity.getBody().getName()).isNotNull();
     }
 }

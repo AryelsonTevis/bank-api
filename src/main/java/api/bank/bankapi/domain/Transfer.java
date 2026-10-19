@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -30,15 +31,15 @@ public class Transfer {
     private Users targetUsers;
 
     @NotNull(message = "Amount cannot be null")
-    private double amount;
+    private BigDecimal amount;
 
     private String date;
 
-    private double accountOriginBalanceBefore;
+    private BigDecimal accountOriginBalanceBefore;
 
-    private double accountOriginBalanceAfter;
+    private BigDecimal accountOriginBalanceAfter;
 
-    private double accountTargetBalanceBefore;
+    private BigDecimal accountTargetBalanceBefore;
 
-    private double accountTargetBalanceAfter;
+    private BigDecimal accountTargetBalanceAfter;
 }

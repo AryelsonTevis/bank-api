@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,12 +21,12 @@ public class Account {
     private Long id;
 
     @Column(name = "balance")
-    private double balance;
+    private BigDecimal balance;
 
     @Column(name = "credit_limit")
-    private double creditLimit;
+    private BigDecimal creditLimit;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "cpf", referencedColumnName = "cpf")
     @NotNull(message = "Account user not referred")
     private Users users;

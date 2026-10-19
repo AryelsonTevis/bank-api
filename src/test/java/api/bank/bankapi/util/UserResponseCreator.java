@@ -1,10 +1,10 @@
 package api.bank.bankapi.util;
 
-import api.bank.bankapi.DTO.LoginUserResponse;
+import api.bank.bankapi.DTO.UserResponse;
 
-public class LoginUserResponseCreator {
-    public static LoginUserResponse createLoginUserResponse(){
-        return LoginUserResponse.builder()
+public class UserResponseCreator {
+    public static UserResponse createUserResponse(){
+        return UserResponse.builder()
                 .name(UserCreator.createUserToBeSaved().getName())
                 .cpf(UserCreator.createUserToBeSaved().getCpf()
                         .replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4")
