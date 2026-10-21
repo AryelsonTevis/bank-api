@@ -1,6 +1,6 @@
 package api.bank.bankapi.util;
 
-import api.bank.bankapi.domain.Account;
+import api.bank.bankapi.domain.account.Account;
 
 import java.math.BigDecimal;
 

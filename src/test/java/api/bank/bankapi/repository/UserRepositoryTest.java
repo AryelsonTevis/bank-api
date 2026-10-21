@@ -1,6 +1,6 @@
 package api.bank.bankapi.repository;
 
-import api.bank.bankapi.domain.Users;
+import api.bank.bankapi.domain.user.Users;
 import api.bank.bankapi.util.UserCreator;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.log4j.Log4j2;

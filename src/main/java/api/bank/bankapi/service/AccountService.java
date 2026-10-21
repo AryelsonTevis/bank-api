@@ -4,9 +4,9 @@ import api.bank.bankapi.DTO.AccountUserResponse;
 import api.bank.bankapi.DTO.TargetTransferAccountPost;
 import api.bank.bankapi.DTO.TargetTransferAmountAndTargetAccountPost;
 import api.bank.bankapi.DTO.UserResponse;
-import api.bank.bankapi.domain.Account;
-import api.bank.bankapi.domain.Transfer;
-import api.bank.bankapi.domain.Users;
+import api.bank.bankapi.domain.account.Account;
+import api.bank.bankapi.domain.Transfer.Transfer;
+import api.bank.bankapi.domain.user.Users;
 import api.bank.bankapi.repository.AccountRepository;
 import api.bank.bankapi.repository.TransferRepository;
 import api.bank.bankapi.repository.UserRepository;
@@ -41,8 +41,8 @@ public class AccountService {
     }
 
     @Transactional
-    public UserResponse responseToTransferAttempt(Long originId, TargetTransferAmountAndTargetAccountPost targetTransferAmountPost) {
-        Users userOrigin = userRepository.findByIdAndActiveTrue(originId);
+    public UserResponse responseToTransferAttempt(String token, TargetTransferAmountAndTargetAccountPost targetTransferAmountPost) {
+        Users userOrigin = userRepository.findByCpfAndActiveTrue(token);
 
         if (userOrigin == null) throw new IllegalArgumentException("User origin not found");
 

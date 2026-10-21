@@ -1,8 +1,8 @@
 package api.bank.bankapi.controller;
 
 import api.bank.bankapi.DTO.UserResponse;
-import api.bank.bankapi.DTO.UserLoginPostRequest;
-import api.bank.bankapi.DTO.UserPostRequest;
+import api.bank.bankapi.DTO.UserLoginRequest;
+import api.bank.bankapi.DTO.UserRegisterRequest;
 import api.bank.bankapi.service.UserService;
 import api.bank.bankapi.util.UserResponseCreator;
 import api.bank.bankapi.util.UserPostCreator;
@@ -36,17 +36,17 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp(){
-        BDDMockito.when(userServiceMock.saveUser(ArgumentMatchers.any(UserPostRequest.class)))
+        BDDMockito.when(userServiceMock.saveUser(ArgumentMatchers.any(UserRegisterRequest.class)))
                 .thenReturn(UserResponseCreator.createUserResponse());
 
-        BDDMockito.when(userServiceMock.login(ArgumentMatchers.any(UserLoginPostRequest.class)))
+        BDDMockito.when(userServiceMock.login(ArgumentMatchers.any(UserLoginRequest.class)))
                 .thenReturn(UserResponseCreator.createUserResponse());
     }
 
     @Test
     @DisplayName("Return user response when create successful")
     void create_ReturnUserResponse_WhenCreateSuccessful(){
-        UserPostRequest userToBeSaved = UserPostCreator.createUserPostCreator();
+        UserRegisterRequest userToBeSaved = UserPostCreator.createUserPostCreator();
         UserResponse user = userController.createUser(userToBeSaved).getBody();
 
         Assertions.assertThat(user).isNotNull().isEqualTo(UserResponseCreator.createUserResponse());
@@ -55,7 +55,7 @@ class UserControllerTest {
     @Test
     @DisplayName("Return login user response when login successful")
     void create_ReturnUserResponse_WhenLoginSuccessful(){
-        UserPostRequest userToBeSaved = UserPostCreator.createUserPostCreator();
+        UserRegisterRequest userToBeSaved = UserPostCreator.createUserPostCreator();
         UserResponse user = userController.createUser(userToBeSaved).getBody();
 
         Assertions.assertThat(user).isNotNull().isEqualTo(UserResponseCreator.createUserResponse());

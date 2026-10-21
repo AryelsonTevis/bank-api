@@ -1,6 +1,6 @@
-package api.bank.bankapi.domain;
+package api.bank.bankapi.domain.account;
 
-import api.bank.bankapi.DTO.AccountUserResponse;
+import api.bank.bankapi.domain.user.Users;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

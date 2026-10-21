@@ -1,10 +1,10 @@
 package api.bank.bankapi.util;
 
-import api.bank.bankapi.DTO.UserPostRequest;
+import api.bank.bankapi.DTO.UserRegisterRequest;
 
 public class UserPostCreator {
-    public static UserPostRequest createUserPostCreator(){
-        return UserPostRequest.builder()
+    public static UserRegisterRequest createUserPostCreator(){
+        return UserRegisterRequest.builder()
                 .cpf(UserCreator.createUserToBeSaved().getCpf())
                 .birthDate(String.valueOf(UserCreator.createUserToBeSaved().getDateBirth()))
                 .email(UserCreator.createUserToBeSaved().getEmail())
@@ -13,8 +13,8 @@ public class UserPostCreator {
                 .phone(UserCreator.createUserToBeSaved().getPhone())
                 .build();
     }
-    public static UserPostRequest createUserPostCreatorForIntegration(){
-        return UserPostRequest.builder()
+    public static UserRegisterRequest createUserPostCreatorForIntegration(){
+        return UserRegisterRequest.builder()
                 .cpf(UserCreator.createUserToBeSavedForIntegration().getCpf())
                 .birthDate("01/06/2000")
                 .email(UserCreator.createUserToBeSavedForIntegration().getEmail())

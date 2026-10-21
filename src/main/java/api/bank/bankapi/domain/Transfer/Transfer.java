@@ -1,5 +1,6 @@
-package api.bank.bankapi.domain;
+package api.bank.bankapi.domain.Transfer;
 
+import api.bank.bankapi.domain.user.Users;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -8,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor

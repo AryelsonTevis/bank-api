@@ -1,7 +1,7 @@
 package api.bank.bankapi.repository;
 
-import api.bank.bankapi.domain.Account;
-import api.bank.bankapi.domain.Users;
+import api.bank.bankapi.domain.account.Account;
+import api.bank.bankapi.domain.user.Users;
 import api.bank.bankapi.util.AccountCreator;
 import api.bank.bankapi.util.UserCreator;
 import jakarta.validation.ConstraintViolationException;

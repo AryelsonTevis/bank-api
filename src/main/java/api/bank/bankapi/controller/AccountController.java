@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
     private final AccountService accountService;
 
-    @PostMapping(path = "{originId}/transfer")
+    @PostMapping(path = "/transfer")
     @Operation(summary = "Check the amount to be transfer")
-    public ResponseEntity<UserResponse> verifyTransferAmount(@PathVariable long originId, @Valid @RequestBody TargetTransferAmountAndTargetAccountPost transferAmountPost) {
-        return new ResponseEntity<>(accountService.responseToTransferAttempt(originId ,transferAmountPost), HttpStatus.OK);
+    public ResponseEntity<UserResponse> verifyTransferAmount(@RequestParam String token, @Valid @RequestBody TargetTransferAmountAndTargetAccountPost transferAmountPost) {
+        return new ResponseEntity<>(accountService.responseToTransferAttempt(token ,transferAmountPost), HttpStatus.OK);
     }
 
     @GetMapping(path = "/account_transfer")

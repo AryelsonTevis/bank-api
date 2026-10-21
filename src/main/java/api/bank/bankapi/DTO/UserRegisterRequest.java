@@ -15,7 +15,7 @@ import org.hibernate.validator.constraints.br.CPF;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPostRequest {
+public class UserRegisterRequest {
     @NotEmpty(message = "Cpf cannot be empty")
     @Schema(description = "This is the user cpf", example = "01234567891 or 012.345.678-91")
     @Pattern(regexp = "\\d{11}|\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}", message = "Cpf must have 11 digits")

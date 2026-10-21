@@ -1,7 +1,6 @@
 package api.bank.bankapi.util;
 
-import api.bank.bankapi.domain.Users;
-import api.bank.bankapi.repository.UserRepository;
+import api.bank.bankapi.domain.user.Users;
 
 import java.sql.Date;
 import java.time.LocalDate;

@@ -1,14 +1,19 @@
 package api.bank.bankapi.service;
 
-import api.bank.bankapi.DTO.UserLoginPostRequest;
-import api.bank.bankapi.DTO.UserPostRequest;
+import api.bank.bankapi.DTO.AccountUserResponse;
+import api.bank.bankapi.DTO.UserLoginRequest;
+import api.bank.bankapi.DTO.UserRegisterRequest;
 import api.bank.bankapi.DTO.UserResponse;
-import api.bank.bankapi.domain.Account;
-import api.bank.bankapi.domain.Users;
+import api.bank.bankapi.domain.account.Account;
+import api.bank.bankapi.domain.user.UserRole;
+import api.bank.bankapi.domain.user.Users;
 import api.bank.bankapi.repository.AccountRepository;
 import api.bank.bankapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +23,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static api.bank.bankapi.service.CpfFormat.formatCpf;
 import static api.bank.bankapi.service.PhoneFormat.formatPhone;
@@ -27,12 +33,15 @@ import static api.bank.bankapi.service.PhoneFormat.formatPhone;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
     private final DecimalFormat df = new DecimalFormat("#,##0.00");
 
-    public UserResponse saveUser(UserPostRequest userCreatePost) {
+    public UserResponse saveUser(UserRegisterRequest userCreatePost) {
         String CpfToBeSaved = formatCpf(userCreatePost.getCpf());
         String phoneToBeSaved = formatPhone(userCreatePost.getPhone());
 
@@ -49,33 +58,32 @@ public class UserService {
                 .dateJoined(Date.valueOf(LocalDate.now()))
                 .phone(phoneToBeSaved)
                 .active(true)
+                .role(UserRole.USER)
                 .build();
 
         Users savedUser = userRepository.save(userToBeSaved);
         Account createAccount = Account.builder().balance(BigDecimal.ZERO).creditLimit(new BigDecimal("50.00")).users(savedUser).build();
 
         Account savedAccount = accountRepository.save(createAccount);
-        return UserResponse.builder().name(savedUser.getName()).cpf(savedUser.getCpf()).balance(String.format("R$ %.2f", savedAccount.getBalance())).credit(String.format("R $%.2f",savedAccount.getCreditLimit())).build();
+        return UserResponse.builder().name(savedUser.getName()).cpf(savedUser.getCpf()).balance(String.format("R$ %.2f", savedAccount.getBalance())).credit(String.format("R $%.2f", savedAccount.getCreditLimit())).build();
     }
 
-    public UserResponse login(UserLoginPostRequest userLogin) {
+    public UserResponse login(UserLoginRequest userLogin) {
+
+
+        var login = new UsernamePasswordAuthenticationToken(formatCpf(userLogin.getCpf()), userLogin.getPassword());
+        var auth = this.authenticationManager.authenticate(login);
+
 
         Users userResponse = userRepository.findByCpfAndActiveTrue(formatCpf(userLogin.getCpf()));
+        Account account = accountRepository.findByCpf(formatCpf(userLogin.getCpf()));
+        return UserResponse.builder()
+                .name(userResponse.getName())
+                .cpf(formatCpf(userResponse.getCpf()))
+                .balance("R$ " + df.format(account.getBalance()))
+                .credit("R$ " + df.format(account.getCreditLimit()))
+                .build();
 
-        if ( userResponse != null && passwordMatch(userLogin.getPassword(), userResponse.getPassword())) {
-            Account account = accountRepository.findByCpf(userResponse.getCpf());
-            return UserResponse.builder()
-                    .name(userResponse.getName())
-                    .cpf(formatCpf(userResponse.getCpf()))
-                    .balance("R$ "+df.format(account.getBalance()))
-                    .credit("R$ "+df.format(account.getCreditLimit()))
-                    .build();
-        }
-        throw new IllegalArgumentException("Cpf/Password dont matches");
-    }
-
-    public boolean passwordMatch(String passwordEntered, String passwordSaved) {
-        return passwordEncoder.matches(passwordEntered, passwordSaved);
     }
 
     private LocalDate verifyAgeIsValidOrThrowIllegalArgumentException(String birthDate) {
@@ -83,6 +91,15 @@ public class UserService {
 
         if (Period.between(date, LocalDate.now()).getYears() >= 16) return date;
         throw new IllegalArgumentException("Age less than 16 years old");
+    }
+
+    public List<AccountUserResponse> getAllUsers() {
+        return userRepository.findAll().stream().map(user -> {
+            AccountUserResponse response = new AccountUserResponse();
+            response.setName(user.getName());
+            response.setCpf(user.getCpf());
+            return response;
+        }).toList();
     }
 
 }

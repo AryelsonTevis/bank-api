@@ -1,10 +1,8 @@
 package api.bank.bankapi.integration;
 
-import api.bank.bankapi.DTO.UserPostRequest;
+import api.bank.bankapi.DTO.UserRegisterRequest;
 import api.bank.bankapi.DTO.UserResponse;
-import api.bank.bankapi.domain.Users;
 import api.bank.bankapi.repository.UserRepository;
-import api.bank.bankapi.util.UserCreator;
 import api.bank.bankapi.util.UserPostCreator;
 import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
@@ -23,7 +21,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.web.client.RestTemplate;
 
 @Log4j2
 @DisplayName("Teste user controller integration")
@@ -50,7 +47,7 @@ public class UserControllerIT {
     @Test
     @DisplayName("Save Returns user when successful")
     void save_ReturnsUser_WhenSuccessful(){
-        UserPostRequest userPostRequest = UserPostCreator.createUserPostCreatorForIntegration();
+        UserRegisterRequest userPostRequest = UserPostCreator.createUserPostCreatorForIntegration();
 
         userPostRequest.setBirthDate("31/02/2000");
 
