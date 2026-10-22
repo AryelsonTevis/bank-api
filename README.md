@@ -8,6 +8,7 @@ API REST desenvolvida com Spring Boot para estudo de conceitos de backend, com C
 - Spring Validation
 - MySQL
 - Lombok
+- JWT
 - Docker / Docker Compose
 
 ## 📌 Funcionalidades
@@ -15,7 +16,20 @@ API REST desenvolvida com Spring Boot para estudo de conceitos de backend, com C
 ### User (`/User`)
 | Método | Rota | Descrição |
 |--------|------|-----------|
-| POST | `/User` | Cria um novo Usuario |
+| POST | `/User/register` | Cria um novo Usuario |
+| POST | `/User/login` | Loga o Usuario |
+
+### Account (`/User/Account`)
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| POST | `/User/Account/account_transfer` | Procura o usuario alvo |
+| PATCH | `/User/Account/transfer` | Transfere o valor |
+
+### Transfer (`/User/bank_statement`)
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/User/bank_statement` | Retorna as transferencia feitas na conta |
+
 
 O projeto também conta com um `RestExceptionHandler` global para retornar respostas de erro padronizadas (validação, bad request, etc.).
 
@@ -36,9 +50,10 @@ O projeto também conta com um `RestExceptionHandler` global para retornar respo
 
 2. Crie um arquivo `.env` na raiz do projeto (baseado no `.env.example`) com suas credenciais de banco:
    ```
-   DB_USERNAME=root
+   DB_USERNAME=seu_usuario
    DB_PASSWORD=sua_senha
    DB_URL=jdbc:mysql://localhost:3306/bank_api?createDatabaseIfNotExist=true
+   API_SECURITY_TOKEN_SECRET="sua_secret_para_o_JWT"
    ```
 
 3. Suba o banco de dados MySQL com Docker:

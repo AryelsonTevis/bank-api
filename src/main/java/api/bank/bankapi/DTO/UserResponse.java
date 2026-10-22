@@ -12,8 +12,11 @@ import lombok.NoArgsConstructor;
 public class UserResponse {
 
     private String name;
+
     private String cpf;
+
     private String balance;
+
     private String credit;
 
 }

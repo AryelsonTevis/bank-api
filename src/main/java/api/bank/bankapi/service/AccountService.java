@@ -10,8 +10,11 @@ import api.bank.bankapi.domain.user.Users;
 import api.bank.bankapi.repository.AccountRepository;
 import api.bank.bankapi.repository.TransferRepository;
 import api.bank.bankapi.repository.UserRepository;
+import api.bank.bankapi.security.TokenService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,18 +25,29 @@ import java.time.format.DateTimeFormatter;
 
 import static api.bank.bankapi.service.CpfFormat.formatCpf;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class AccountService {
+    @Autowired
+    private TokenService tokenService;
+
     private final DecimalFormat df = new DecimalFormat("#,##0.00");
+
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     private final AccountRepository accountRepository;
+
     private final UserRepository userRepository;
+
     private final TransferRepository transferRepository;
 
-    public AccountUserResponse transfer(TargetTransferAccountPost transferAccountPost) {
+    public AccountUserResponse transfer(String token, TargetTransferAccountPost transferAccountPost) {
 
         Users accountTarget = userRepository.findByCpfAndActiveTrue(formatCpf(transferAccountPost.getCpf()));
+        String cpfOrigin = extractOriginCpfFromToken(token);
+
+        if(accountTarget.getCpf().equals(cpfOrigin)) throw new IllegalArgumentException("Users can't be the same");
         if (accountTarget != null) return AccountUserResponse.builder()
                 .name(accountTarget.getName())
                 .cpf(formatCpfResponse(accountTarget.getCpf())).build();
@@ -42,7 +56,10 @@ public class AccountService {
 
     @Transactional
     public UserResponse responseToTransferAttempt(String token, TargetTransferAmountAndTargetAccountPost targetTransferAmountPost) {
-        Users userOrigin = userRepository.findByCpfAndActiveTrue(token);
+        String cpfOrigin = extractOriginCpfFromToken(token);
+
+
+        Users userOrigin = userRepository.findByCpfAndActiveTrue(cpfOrigin);
 
         if (userOrigin == null) throw new IllegalArgumentException("User origin not found");
 
@@ -73,7 +90,7 @@ public class AccountService {
             accountTarget.setBalance(accountTarget.getBalance().add(targetTransferAmountPost.getAmount()));
 
             accountOrigin = accountRepository.save(accountOrigin);
-            accountTarget = accountRepository.save(accountTarget);
+            accountRepository.save(accountTarget);
             transferRepository.save(transfer);
 
         }
@@ -85,7 +102,7 @@ public class AccountService {
                 .credit("R$ " + df.format(accountOrigin.getCreditLimit())).build();
     }
 
-    public boolean verifyAmount(Account originAccount, BigDecimal amount) {
+    private boolean verifyAmount(Account originAccount, BigDecimal amount) {
         boolean result = false;
         if (amount.compareTo(BigDecimal.ZERO) < 0)
             throw new IllegalArgumentException("Amount must be greater than zero");
@@ -97,9 +114,13 @@ public class AccountService {
 
     }
 
-    public static String formatCpfResponse(String cpf) {
+    private static String formatCpfResponse(String cpf) {
 
         return formatCpf(cpf).replaceFirst("\\d{3}", "***")
                 .replaceAll("-\\d{2}", "-**");
+    }
+
+    private String extractOriginCpfFromToken(String token) {
+        return tokenService.validateToken(token.replace("Bearer ", ""));
     }
 }

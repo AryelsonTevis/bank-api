@@ -25,12 +25,14 @@ public class UserController {
 
     @PostMapping(path = "/register")
     @Operation(summary = "Create User")
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRegisterRequest userCreatePost) {
-    return new ResponseEntity<>(userService.saveUser(userCreatePost), HttpStatus.CREATED);
+    public ResponseEntity<HttpStatus> createUser(@Valid @RequestBody UserRegisterRequest userCreatePost) {
+        userService.saveUser(userCreatePost);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
     @PostMapping(path = "/login")
     @Operation(summary = "Login User")
-    public ResponseEntity<UserResponse> login(@Valid @RequestBody UserLoginRequest userLoginPost) {
+    public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginRequest userLoginPost) {
         return new ResponseEntity<>(userService.login(userLoginPost), HttpStatus.OK);
     }
 }
