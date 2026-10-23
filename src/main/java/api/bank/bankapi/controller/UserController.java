@@ -51,7 +51,7 @@ public class UserController {
     }
 
     @PostMapping(path = "/register_admin")
-    @Operation(summary = "Create User")
+    @Operation(summary = "Create User Role Admin")
     public ResponseEntity<HttpStatus> createUserAdmin(@RequestHeader("Permission") String password ,@Valid @RequestBody UserRegisterRequest userCreatePost) {
         userService.saveUserAdmin(userCreatePost, password);
         return new ResponseEntity<>(HttpStatus.CREATED);
