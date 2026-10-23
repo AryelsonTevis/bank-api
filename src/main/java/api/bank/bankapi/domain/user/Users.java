@@ -55,6 +55,7 @@ public class Users implements UserDetails {
 
     private boolean active;
 
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     @Override

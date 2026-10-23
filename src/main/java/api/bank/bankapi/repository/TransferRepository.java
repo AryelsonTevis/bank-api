@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface TransferRepository extends JpaRepository<Transfer, Long> {
-    @Query(value = "SELECT amount, date, target_account FROM transfer WHERE origin_account = :originId", nativeQuery = true)
-    List<TransferResponse> findByOriginAccount(@Param("originId") Long originId);
+    @Query(value = "SELECT amount, date, target_account, origin_account FROM transfer WHERE origin_account = :originId OR target_account ORDER BY date DESC", nativeQuery = true)
+    List<TransferResponse> findByTransferAccount(@Param("originId") Long originId);
 
 }

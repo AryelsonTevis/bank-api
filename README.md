@@ -18,6 +18,9 @@ API REST desenvolvida com Spring Boot para estudo de conceitos de backend, com C
 |--------|------|-----------|
 | POST | `/User/register` | Cria um novo Usuario |
 | POST | `/User/login` | Loga o Usuario |
+| PATCH | `/User/disable_user` | Desativa o Usuario |
+| PATCH | `/User/enable_user` | Ativa o Usuario |
+| POST | `/User/register_admin` | Cria o Usuario com permisão ADMIN |
 
 ### Account (`/User/Account`)
 | Método | Rota | Descrição |
@@ -54,6 +57,7 @@ O projeto também conta com um `RestExceptionHandler` global para retornar respo
    DB_PASSWORD=sua_senha
    DB_URL=jdbc:mysql://localhost:3306/bank_api?createDatabaseIfNotExist=true
    API_SECURITY_TOKEN_SECRET="sua_secret_para_o_JWT"
+   PERMISSION_USER_ADMIN=senha_para_criar_user_Admin
    ```
 
 3. Suba o banco de dados MySQL com Docker:

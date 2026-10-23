@@ -46,7 +46,9 @@ public class UserService {
     private final DecimalFormat df = new DecimalFormat("#,##0.00");
 
     public UserResponse saveUser(UserRegisterRequest userCreatePost) {
+
         String CpfToBeSaved = formatCpf(userCreatePost.getCpf());
+
         String phoneToBeSaved = formatPhone(userCreatePost.getPhone());
 
         LocalDate dateBirth = verifyAgeIsValidOrThrowIllegalArgumentException(userCreatePost.getBirthDate());
@@ -66,22 +68,59 @@ public class UserService {
                 .build();
 
         Users savedUser = userRepository.save(userToBeSaved);
+
         Account createAccount = Account.builder().balance(BigDecimal.ZERO).creditLimit(new BigDecimal("50.00")).users(savedUser).build();
 
         Account savedAccount = accountRepository.save(createAccount);
+
+        return UserResponse.builder().name(savedUser.getName()).cpf(savedUser.getCpf()).balance(String.format("R$ %.2f", savedAccount.getBalance())).credit(String.format("R $%.2f", savedAccount.getCreditLimit())).build();
+    }
+
+    public UserResponse saveUserAdmin(UserRegisterRequest userCreatePost, String password) {
+
+        if (!tokenService.chekPermissionToCreateUserAdmin(password)) throw new IllegalArgumentException("You cant create user admin");
+
+        String CpfToBeSaved = formatCpf(userCreatePost.getCpf());
+
+        String phoneToBeSaved = formatPhone(userCreatePost.getPhone());
+
+        LocalDate dateBirth = verifyAgeIsValidOrThrowIllegalArgumentException(userCreatePost.getBirthDate());
+
+        String passwordEntered = userCreatePost.getPassword();
+
+        Users userToBeSaved = Users.builder()
+                .cpf(CpfToBeSaved)
+                .name(userCreatePost.getName())
+                .password(passwordEncoder.encode(passwordEntered))
+                .email(userCreatePost.getEmail())
+                .dateBirth(Date.valueOf(dateBirth))
+                .dateJoined(Date.valueOf(LocalDate.now()))
+                .phone(phoneToBeSaved)
+                .active(true)
+                .role(UserRole.ADMIN)
+                .build();
+
+        Users savedUser = userRepository.save(userToBeSaved);
+
+        Account createAccount = Account.builder().balance(BigDecimal.valueOf(100)).creditLimit(new BigDecimal("100.00")).users(savedUser).build();
+
+        Account savedAccount = accountRepository.save(createAccount);
+
         return UserResponse.builder().name(savedUser.getName()).cpf(savedUser.getCpf()).balance(String.format("R$ %.2f", savedAccount.getBalance())).credit(String.format("R $%.2f", savedAccount.getCreditLimit())).build();
     }
 
     public UserLoginResponse login(UserLoginRequest userLogin) {
 
-
         var login = new UsernamePasswordAuthenticationToken(formatCpf(userLogin.getCpf()), userLogin.getPassword());
+
         var auth = this.authenticationManager.authenticate(login);
 
         var token = tokenService.generateToken((Users) auth.getPrincipal());
 
-        Users userResponse = userRepository.findByCpfAndActiveTrue(formatCpf(userLogin.getCpf()));
+        Users userResponse = userRepository.findByCpf(formatCpf(userLogin.getCpf()));
+
         Account account = accountRepository.findByCpf(formatCpf(userLogin.getCpf()));
+
         return UserLoginResponse.builder()
                 .name(userResponse.getName())
                 .cpf(formatCpf(userResponse.getCpf()))
@@ -92,14 +131,35 @@ public class UserService {
 
     }
 
+    public void disableUser(String token){
+
+        String cpf = extractOriginCpfFromToken(token);
+
+        Account account = accountRepository.findByCpf(formatCpf(cpf));
+
+        if (!account.getBalance().equals(BigDecimal.ZERO)) throw new RuntimeException("You cannot disable this user because the balance not is not zero");
+
+        userRepository.disableUser(cpf);
+    }
+
+    public void enableUser(String token){
+
+        String cpf = extractOriginCpfFromToken(token);
+
+        userRepository.enableUser(cpf);
+    }
+
     private LocalDate verifyAgeIsValidOrThrowIllegalArgumentException(String birthDate) {
+
         LocalDate date = LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
         if (Period.between(date, LocalDate.now()).getYears() >= 16) return date;
+
         throw new IllegalArgumentException("Age less than 16 years old");
     }
 
     public List<AccountUserResponse> getAllUsers() {
+
         return userRepository.findAll().stream().map(user -> {
             AccountUserResponse response = new AccountUserResponse();
             response.setName(user.getName());
@@ -108,4 +168,7 @@ public class UserService {
         }).toList();
     }
 
+    private String extractOriginCpfFromToken(String token) {
+        return tokenService.validateToken(token.replace("Bearer ", ""));
+    }
 }

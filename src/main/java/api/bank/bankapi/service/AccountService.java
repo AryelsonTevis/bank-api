@@ -32,7 +32,7 @@ public class AccountService {
     @Autowired
     private TokenService tokenService;
 
-    private final DecimalFormat df = new DecimalFormat("#,##0.00");
+    private DecimalMoneyResponse decimalMoneyResponse;
 
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -98,8 +98,8 @@ public class AccountService {
         return UserResponse.builder()
                 .name(userOrigin.getName())
                 .cpf(userOrigin.getCpf())
-                .balance("R$ " + df.format(accountOrigin.getBalance()))
-                .credit("R$ " + df.format(accountOrigin.getCreditLimit())).build();
+                .balance(decimalMoneyResponse.formatDecimal(accountOrigin.getBalance()))
+                .credit(decimalMoneyResponse.formatDecimal(accountOrigin.getCreditLimit())).build();
     }
 
     private boolean verifyAmount(Account originAccount, BigDecimal amount) {

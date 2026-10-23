@@ -35,4 +35,25 @@ public class UserController {
     public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginRequest userLoginPost) {
         return new ResponseEntity<>(userService.login(userLoginPost), HttpStatus.OK);
     }
+
+    @PatchMapping(path = "/disable_user")
+    @Operation(summary = "Disable User")
+    public ResponseEntity<UserLoginResponse> disableUser(@RequestHeader("Authorization") String token) {
+        userService.disableUser(token);
+        return new ResponseEntity<>(HttpStatus.GONE);
+    }
+
+    @PatchMapping(path = "/enable_user")
+    @Operation(summary = "Enable User")
+    public ResponseEntity<UserLoginResponse> enableUser(@RequestHeader("Authorization") String token) {
+        userService.enableUser(token);
+        return new ResponseEntity<>(HttpStatus.GONE);
+    }
+
+    @PostMapping(path = "/register_admin")
+    @Operation(summary = "Create User")
+    public ResponseEntity<HttpStatus> createUserAdmin(@RequestHeader("Permission") String password ,@Valid @RequestBody UserRegisterRequest userCreatePost) {
+        userService.saveUserAdmin(userCreatePost, password);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 }

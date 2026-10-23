@@ -18,5 +18,4 @@ public class UserResponse {
     private String balance;
 
     private String credit;
-
 }

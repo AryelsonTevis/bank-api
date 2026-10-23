@@ -12,7 +12,12 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransferResponse {
+
     private BigDecimal amount;
+
     private String date;
+
     private Long targetAccount;
+
+    private Long originAccount;
 }

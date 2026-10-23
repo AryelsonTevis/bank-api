@@ -14,5 +14,6 @@ import java.math.BigDecimal;
 public class AccountResponse {
 
     private BigDecimal balance;
+
     private BigDecimal credit;
 }
