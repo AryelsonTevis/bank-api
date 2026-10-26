@@ -1,5 +1,6 @@
 package api.bank.bankapi.domain.Transfer;
 
+import api.bank.bankapi.domain.account.Account;
 import api.bank.bankapi.domain.user.Users;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -21,14 +22,14 @@ public class Transfer {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "origin_account", referencedColumnName = "id")
+    @JoinColumn(name = "origin_account", referencedColumnName = "cpf")
     @NotNull(message = "Account user origin not referred")
-    private Users originUsers;
+    private Account originAccount;
 
     @ManyToOne
-    @JoinColumn(name = "target_account", referencedColumnName = "id")
+    @JoinColumn(name = "target_account", referencedColumnName = "cpf")
     @NotNull(message = "Account user target not referred")
-    private Users targetUsers;
+    private Account targetAccount;
 
     @NotNull(message = "Amount cannot be null")
     private BigDecimal amount;

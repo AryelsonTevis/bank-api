@@ -8,6 +8,6 @@ public class DecimalMoneyResponse {
 
     protected static String formatDecimal(BigDecimal decimal) {
 
-       return df.format(decimal);
+       return "R$ "+df.format(decimal);
     }
 }

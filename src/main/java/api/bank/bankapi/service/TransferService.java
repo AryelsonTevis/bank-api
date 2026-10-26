@@ -3,6 +3,7 @@ package api.bank.bankapi.service;
 import api.bank.bankapi.DTO.BankStatementResponse;
 import api.bank.bankapi.repository.AccountRepository;
 import api.bank.bankapi.repository.TransferRepository;
+import api.bank.bankapi.repository.UserRepository;
 import api.bank.bankapi.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -15,41 +16,49 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TransferService {
+
     @Autowired
     private TokenService tokenService;
 
     private DecimalMoneyResponse decimalMoneyResponse;
 
+    private FormatCpfResponse formatCpfResponse;
+
     private final TransferRepository transferRepository;
 
     private final AccountRepository accountRepository;
 
+    private final UserRepository userRepository;
+
     public List<BankStatementResponse> getBankStatement(String token) {
+        String cpf = extractCpfFromToken(token);
+        log.info(cpf);
 
-        Long idAccountOrigin = accountRepository.findByCpf(extractOriginCpfFromToken(token)).getId();
+        String cpfOrigin = accountRepository.findByCpf(cpf).getUsers().getCpf();
 
-        return transferRepository.findByTransferAccount(idAccountOrigin).stream().map(tr -> {
+        return transferRepository.findByTransferAccount(cpfOrigin).stream().map(tr -> {
             BankStatementResponse response = new BankStatementResponse();
-            if (idAccountOrigin.equals(tr.getOriginAccount())) {
+
+            if (cpfOrigin.equals(tr.getOriginAccountCpf())) {
 
                 response.setTitle("Transferido");
 
-                response.setAmount("-R$ " + decimalMoneyResponse.formatDecimal(tr.getAmount()));
+                response.setAmount("-" + decimalMoneyResponse.formatDecimal(tr.getAmount()));
 
-                response.setCpfFromAccount(accountRepository.findById(tr.getTargetAccount()).map(at -> at.getUsers().getCpf()).toString().replace("Optional[", "").replace("]", ""));
+                response.setCpfFromAccount(formatCpfResponse.formatCpfResponse(userRepository.findByCpf(tr.getTargetAccountCpf()).getCpf()));
 
-                response.setNameFromAccount(accountRepository.findById(tr.getTargetAccount()).map(at -> at.getUsers().getName()).toString().replace("Optional[", "").replace("]", ""));
+                response.setNameFromAccount(userRepository.findByCpf(tr.getTargetAccountCpf()).getName());
 
                 response.setDate(tr.getDate());
             } else {
 
                 response.setTitle("Recebido");
 
-                response.setAmount("+R$ " + decimalMoneyResponse.formatDecimal(tr.getAmount()));
+                response.setAmount("+" + decimalMoneyResponse.formatDecimal(tr.getAmount()));
 
-                response.setCpfFromAccount(accountRepository.findById(tr.getOriginAccount()).map(at -> at.getUsers().getCpf()).toString().replace("Optional[", "").replace("]", ""));
+                response.setCpfFromAccount(formatCpfResponse.formatCpfResponse(userRepository.findByCpf(tr.getOriginAccountCpf()).getCpf()));
 
-                response.setNameFromAccount(accountRepository.findById(tr.getOriginAccount()).map(at -> at.getUsers().getName()).toString().replace("Optional[", "").replace("]", ""));
+                response.setNameFromAccount(userRepository.findByCpf(tr.getOriginAccountCpf()).getName());
 
                 response.setDate(tr.getDate());
             }
@@ -58,7 +67,9 @@ public class TransferService {
         }).toList();
     }
 
-    private String extractOriginCpfFromToken(String token) {
+
+
+    private String extractCpfFromToken(String token) {
 
         return tokenService.validateToken(token.replace("Bearer ", ""));
     }

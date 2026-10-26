@@ -3,6 +3,7 @@ package api.bank.bankapi.service;
 import api.bank.bankapi.DTO.*;
 import api.bank.bankapi.domain.account.Account;
 import api.bank.bankapi.domain.user.UserRole;
+import api.bank.bankapi.domain.user.UserStatus;
 import api.bank.bankapi.domain.user.Users;
 import api.bank.bankapi.repository.AccountRepository;
 import api.bank.bankapi.repository.UserRepository;
@@ -37,6 +38,7 @@ public class UserService {
     @Autowired
     private TokenService tokenService;
 
+
     private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
@@ -63,7 +65,7 @@ public class UserService {
                 .dateBirth(Date.valueOf(dateBirth))
                 .dateJoined(Date.valueOf(LocalDate.now()))
                 .phone(phoneToBeSaved)
-                .active(true)
+                .active(UserStatus.ENABLED)
                 .role(UserRole.USER)
                 .build();
 
@@ -96,7 +98,7 @@ public class UserService {
                 .dateBirth(Date.valueOf(dateBirth))
                 .dateJoined(Date.valueOf(LocalDate.now()))
                 .phone(phoneToBeSaved)
-                .active(true)
+                .active(UserStatus.ENABLED)
                 .role(UserRole.ADMIN)
                 .build();
 
@@ -117,7 +119,7 @@ public class UserService {
 
         var token = tokenService.generateToken((Users) auth.getPrincipal());
 
-        Users userResponse = userRepository.findByCpf(formatCpf(userLogin.getCpf()));
+        Users userResponse = userRepository.findByLogin(formatCpf(userLogin.getCpf()));
 
         Account account = accountRepository.findByCpf(formatCpf(userLogin.getCpf()));
 
@@ -133,18 +135,18 @@ public class UserService {
 
     public void disableUser(String token){
 
-        String cpf = extractOriginCpfFromToken(token);
+        String cpf = extractCpfFromToken(token);
 
         Account account = accountRepository.findByCpf(formatCpf(cpf));
 
-        if (!account.getBalance().equals(BigDecimal.ZERO)) throw new RuntimeException("You cannot disable this user because the balance not is not zero");
+        if (account.getBalance().compareTo(BigDecimal.ZERO)!=0) throw new RuntimeException("You cannot disable this user because the balance not is not zero");
 
         userRepository.disableUser(cpf);
     }
 
     public void enableUser(String token){
 
-        String cpf = extractOriginCpfFromToken(token);
+        String cpf = extractCpfFromToken(token);
 
         userRepository.enableUser(cpf);
     }
@@ -168,7 +170,10 @@ public class UserService {
         }).toList();
     }
 
-    private String extractOriginCpfFromToken(String token) {
+
+    private String extractCpfFromToken(String token) {
+
         return tokenService.validateToken(token.replace("Bearer ", ""));
     }
+
 }

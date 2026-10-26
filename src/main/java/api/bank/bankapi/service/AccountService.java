@@ -34,6 +34,8 @@ public class AccountService {
 
     private DecimalMoneyResponse decimalMoneyResponse;
 
+    private FormatCpfResponse formatCpfResponse;
+
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final AccountRepository accountRepository;
@@ -47,10 +49,11 @@ public class AccountService {
         Users accountTarget = userRepository.findByCpfAndActiveTrue(formatCpf(transferAccountPost.getCpf()));
         String cpfOrigin = extractOriginCpfFromToken(token);
 
+        if (accountTarget == null) throw new IllegalArgumentException("The target account does not exist or is disabled");
         if(accountTarget.getCpf().equals(cpfOrigin)) throw new IllegalArgumentException("Users can't be the same");
         if (accountTarget != null) return AccountUserResponse.builder()
                 .name(accountTarget.getName())
-                .cpf(formatCpfResponse(accountTarget.getCpf())).build();
+                .cpf(formatCpfResponse.formatCpfResponse(accountTarget.getCpf())).build();
         throw new IllegalArgumentException("User not found");
     }
 
@@ -61,11 +64,11 @@ public class AccountService {
 
         Users userOrigin = userRepository.findByCpfAndActiveTrue(cpfOrigin);
 
-        if (userOrigin == null) throw new IllegalArgumentException("User origin not found");
+        if (userOrigin == null) throw new IllegalArgumentException("Transfer is not possible, this user is disabled");
 
         Users userTarget = userRepository.findByCpfAndActiveTrue(formatCpf(targetTransferAmountPost.getCpf()));
 
-        if (userTarget == null) throw new IllegalArgumentException("User Target not found");
+        if (userTarget == null) throw new IllegalArgumentException("User Target not found or is disabled");
 
         Account accountOrigin = accountRepository.findByCpf(userOrigin.getCpf());
 
@@ -75,8 +78,8 @@ public class AccountService {
 
         if (verifyAmount(accountOrigin, targetTransferAmountPost.getAmount())) {
             Transfer transfer = Transfer.builder()
-                    .originUsers(userOrigin)
-                    .targetUsers(userTarget)
+                    .originAccount(accountOrigin)
+                    .targetAccount(accountTarget)
                     .amount(targetTransferAmountPost.getAmount())
                     .date(dtf.format(LocalDateTime.now(ZoneId.of("UTC"))))
                     .accountOriginBalanceBefore(accountOrigin.getBalance())
@@ -114,11 +117,7 @@ public class AccountService {
 
     }
 
-    private static String formatCpfResponse(String cpf) {
 
-        return formatCpf(cpf).replaceFirst("\\d{3}", "***")
-                .replaceAll("-\\d{2}", "-**");
-    }
 
     private String extractOriginCpfFromToken(String token) {
         return tokenService.validateToken(token.replace("Bearer ", ""));

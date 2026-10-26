@@ -53,7 +53,8 @@ public class Users implements UserDetails {
     @NotBlank(message = "The user phone number cannot be empty")
     private String phone;
 
-    private boolean active;
+    @Enumerated(EnumType.STRING)
+    private UserStatus active;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
