@@ -6,6 +6,7 @@ import api.bank.bankapi.DTO.TargetTransferAmountAndTargetAccountPost;
 import api.bank.bankapi.DTO.UserResponse;
 import api.bank.bankapi.domain.account.Account;
 import api.bank.bankapi.domain.Transfer.Transfer;
+import api.bank.bankapi.domain.user.UserStatus;
 import api.bank.bankapi.domain.user.Users;
 import api.bank.bankapi.repository.AccountRepository;
 import api.bank.bankapi.repository.TransferRepository;
@@ -18,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -32,10 +32,6 @@ public class AccountService {
     @Autowired
     private TokenService tokenService;
 
-    private DecimalMoneyResponse decimalMoneyResponse;
-
-    private FormatCpfResponse formatCpfResponse;
-
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final AccountRepository accountRepository;
@@ -44,16 +40,16 @@ public class AccountService {
 
     private final TransferRepository transferRepository;
 
-    public AccountUserResponse transfer(String token, TargetTransferAccountPost transferAccountPost) {
+    public AccountUserResponse getTargetInfo(String token, TargetTransferAccountPost transferAccountPost) {
 
-        Users accountTarget = userRepository.findByCpfAndActiveTrue(formatCpf(transferAccountPost.getCpf()));
+        Users accountTarget = userRepository.findByCpfAndActive(formatCpf(transferAccountPost.getCpf()) , UserStatus.ENABLED);
         String cpfOrigin = extractOriginCpfFromToken(token);
 
         if (accountTarget == null) throw new IllegalArgumentException("The target account does not exist or is disabled");
         if(accountTarget.getCpf().equals(cpfOrigin)) throw new IllegalArgumentException("Users can't be the same");
         if (accountTarget != null) return AccountUserResponse.builder()
                 .name(accountTarget.getName())
-                .cpf(formatCpfResponse.formatCpfResponse(accountTarget.getCpf())).build();
+                .cpf(FormatCpfResponse.formatCpfResponse(accountTarget.getCpf())).build();
         throw new IllegalArgumentException("User not found");
     }
 
@@ -62,11 +58,11 @@ public class AccountService {
         String cpfOrigin = extractOriginCpfFromToken(token);
 
 
-        Users userOrigin = userRepository.findByCpfAndActiveTrue(cpfOrigin);
+        Users userOrigin = userRepository.findByCpfAndActive(cpfOrigin,  UserStatus.ENABLED);
 
         if (userOrigin == null) throw new IllegalArgumentException("Transfer is not possible, this user is disabled");
 
-        Users userTarget = userRepository.findByCpfAndActiveTrue(formatCpf(targetTransferAmountPost.getCpf()));
+        Users userTarget = userRepository.findByCpfAndActive(formatCpf(targetTransferAmountPost.getCpf()),  UserStatus.ENABLED);
 
         if (userTarget == null) throw new IllegalArgumentException("User Target not found or is disabled");
 
@@ -101,13 +97,13 @@ public class AccountService {
         return UserResponse.builder()
                 .name(userOrigin.getName())
                 .cpf(userOrigin.getCpf())
-                .balance(decimalMoneyResponse.formatDecimal(accountOrigin.getBalance()))
-                .credit(decimalMoneyResponse.formatDecimal(accountOrigin.getCreditLimit())).build();
+                .balance(DecimalMoneyResponse.formatDecimal(accountOrigin.getBalance()))
+                .credit(DecimalMoneyResponse.formatDecimal(accountOrigin.getCreditLimit())).build();
     }
 
     private boolean verifyAmount(Account originAccount, BigDecimal amount) {
         boolean result = false;
-        if (amount.compareTo(BigDecimal.ZERO) < 0)
+        if (amount.compareTo(BigDecimal.ZERO) <= 0)
             throw new IllegalArgumentException("Amount must be greater than zero");
 
         if (amount.compareTo(originAccount.getBalance()) > 0)
@@ -116,8 +112,6 @@ public class AccountService {
         return result;
 
     }
-
-
 
     private String extractOriginCpfFromToken(String token) {
         return tokenService.validateToken(token.replace("Bearer ", ""));

@@ -25,7 +25,7 @@ API REST desenvolvida com Spring Boot para estudo de conceitos de backend, com C
 ### Account (`/User/Account`)
 | Método | Rota | Descrição |
 |--------|------|-----------|
-| POST | `/User/Account/account_transfer` | Procura o usuario alvo |
+| POST | `/User/Account/account_transfer_info` | Procura o usuario alvo |
 | PATCH | `/User/Account/transfer` | Transfere o valor |
 
 ### Transfer (`/User/bank_statement`)

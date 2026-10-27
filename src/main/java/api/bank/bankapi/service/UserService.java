@@ -38,7 +38,6 @@ public class UserService {
     @Autowired
     private TokenService tokenService;
 
-
     private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
@@ -119,7 +118,7 @@ public class UserService {
 
         var token = tokenService.generateToken((Users) auth.getPrincipal());
 
-        Users userResponse = userRepository.findByLogin(formatCpf(userLogin.getCpf()));
+        Users userResponse = userRepository.findByCpf(formatCpf(userLogin.getCpf()));
 
         Account account = accountRepository.findByCpf(formatCpf(userLogin.getCpf()));
 

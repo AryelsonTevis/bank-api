@@ -1,10 +1,10 @@
 package api.bank.bankapi.handler;
 
 import api.bank.bankapi.exception.IllegalArgumentExceptionDetails;
-import api.bank.bankapi.exception.ValidationExceptionDetails;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -35,6 +35,13 @@ public class RestExceptionHandler {
     public ResponseEntity<IllegalArgumentExceptionDetails>  handleDataIntegrityViolationException(DataIntegrityViolationException dive) {
         return new ResponseEntity<>(IllegalArgumentExceptionDetails.builder().title("Invalid values")
                 .status(HttpStatus.CONFLICT.value()).details("Any information is invalid").timestamp(LocalDateTime.now()).build(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<IllegalArgumentExceptionDetails> handleAuthenticationException(AuthenticationException ae) {
+        return new ResponseEntity<>(IllegalArgumentExceptionDetails.builder().title("Authentication failed")
+                .status(HttpStatus.UNAUTHORIZED.value()).details("Invalid Cpf or Password").timestamp(LocalDateTime.now()).build(), HttpStatus.UNAUTHORIZED
+        );
     }
 
 }

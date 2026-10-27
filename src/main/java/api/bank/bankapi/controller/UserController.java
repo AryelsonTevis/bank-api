@@ -40,14 +40,14 @@ public class UserController {
     @Operation(summary = "Disable User")
     public ResponseEntity<UserLoginResponse> disableUser(@RequestHeader("Authorization") String token) {
         userService.disableUser(token);
-        return new ResponseEntity<>(HttpStatus.GONE);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PatchMapping(path = "/enable_user")
     @Operation(summary = "Enable User")
     public ResponseEntity<UserLoginResponse> enableUser(@RequestHeader("Authorization") String token) {
         userService.enableUser(token);
-        return new ResponseEntity<>(HttpStatus.GONE);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(path = "/register_admin")

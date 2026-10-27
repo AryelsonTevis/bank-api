@@ -24,10 +24,10 @@ public class AccountController {
         return new ResponseEntity<>(accountService.responseToTransferAttempt(token,transferAmountPost), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/account_transfer")
+    @PostMapping(path = "/account_transfer_info")
     @Operation(summary = "Check the transfer information")
     public ResponseEntity<AccountUserResponse> verifyTransferInformation(@RequestHeader("Authorization") String token, @Valid @RequestBody TargetTransferAccountPost transferAccountPost) {
-        return new ResponseEntity<>(accountService.transfer(token,transferAccountPost), HttpStatus.OK);
+        return new ResponseEntity<>(accountService.getTargetInfo(token,transferAccountPost), HttpStatus.OK);
     }
 
 }

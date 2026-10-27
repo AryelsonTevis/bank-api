@@ -22,12 +22,12 @@ public class Transfer {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "origin_account", referencedColumnName = "cpf")
+    @JoinColumn(name = "origin_account", referencedColumnName = "id")
     @NotNull(message = "Account user origin not referred")
     private Account originAccount;
 
     @ManyToOne
-    @JoinColumn(name = "target_account", referencedColumnName = "cpf")
+    @JoinColumn(name = "target_account", referencedColumnName = "id")
     @NotNull(message = "Account user target not referred")
     private Account targetAccount;
 

@@ -17,7 +17,7 @@ public class TransferResponse {
 
     private String date;
 
-    private String targetAccountCpf;
+    private Long targetUserId;
 
-    private String originAccountCpf;
+    private Long originUserId;
 }
