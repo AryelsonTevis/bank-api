@@ -87,6 +87,6 @@ public class Users implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return active == UserStatus.ENABLED;
+        return true;
     }
 }

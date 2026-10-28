@@ -19,7 +19,7 @@ API REST desenvolvida com Spring Boot para estudo de conceitos de backend, com C
 | POST | `/users` | Cria um novo Usuario |
 | POST | `/users/login` | Loga o Usuario |
 | PATCH | `/users/staus` | Desativa eativa o Usuario |
-| POST | `/users/register_admin` | Cria o Usuario com permisão ADMIN |
+| POST | `/users/admins` | Cria o Usuario com permisão ADMIN |
 
 ### Account (`/accounts`)
 | Método | Rota | Descrição |

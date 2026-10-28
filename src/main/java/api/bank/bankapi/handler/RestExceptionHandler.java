@@ -39,7 +39,6 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(DataIntegrityViolationExceptionDetails.builder()
                 .title("Invalid values")
                 .status(HttpStatus.CONFLICT.value())
-                .details(dive.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build(), HttpStatus.CONFLICT);
     }
