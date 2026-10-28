@@ -74,12 +74,13 @@ public class UserService {
 
         Account savedAccount = accountRepository.save(createAccount);
 
-        return UserResponse.builder().name(savedUser.getName()).cpf(savedUser.getCpf()).balance(String.format("R$ %.2f", savedAccount.getBalance())).credit(String.format("R $%.2f", savedAccount.getCreditLimit())).build();
+        return UserResponse.builder().name(savedUser.getName()).cpf(savedUser.getCpf()).balance(savedAccount.getBalance()).credit(savedAccount.getCreditLimit()).build();
     }
 
     public UserResponse saveUserAdmin(UserRegisterRequest userCreatePost, String password) {
 
-        if (!tokenService.chekPermissionToCreateUserAdmin(password)) throw new IllegalArgumentException("You cant create user admin");
+        if (!tokenService.chekPermissionToCreateUserAdmin(password))
+            throw new IllegalArgumentException("You cant create user admin");
 
         String CpfToBeSaved = formatCpf(userCreatePost.getCpf());
 
@@ -107,7 +108,7 @@ public class UserService {
 
         Account savedAccount = accountRepository.save(createAccount);
 
-        return UserResponse.builder().name(savedUser.getName()).cpf(savedUser.getCpf()).balance(String.format("R$ %.2f", savedAccount.getBalance())).credit(String.format("R $%.2f", savedAccount.getCreditLimit())).build();
+        return UserResponse.builder().name(savedUser.getName()).cpf(savedUser.getCpf()).balance(savedAccount.getBalance()).credit(savedAccount.getCreditLimit()).build();
     }
 
     public UserLoginResponse login(UserLoginRequest userLogin) {
@@ -125,29 +126,25 @@ public class UserService {
         return UserLoginResponse.builder()
                 .name(userResponse.getName())
                 .cpf(formatCpf(userResponse.getCpf()))
-                .balance("R$ " + df.format(account.getBalance()))
-                .credit("R$ " + df.format(account.getCreditLimit()))
+                .balance(account.getBalance())
+                .credit(account.getCreditLimit())
                 .token(token)
                 .build();
 
     }
 
-    public void disableUser(String token){
+    public void statusUser(Users user, StatusRequest newStatus) {
 
-        String cpf = extractCpfFromToken(token);
+        if (newStatus.isNewStatus()) {
+            userRepository.enableUser(user.getCpf());
+        } else {
+            Account account = accountRepository.findByCpf(user.getCpf());
 
-        Account account = accountRepository.findByCpf(formatCpf(cpf));
+            if (account.getBalance().compareTo(BigDecimal.ZERO) != 0)
+                throw new UnsupportedOperationException("You cannot disable this user because the balance not is not zero");
 
-        if (account.getBalance().compareTo(BigDecimal.ZERO)!=0) throw new RuntimeException("You cannot disable this user because the balance not is not zero");
-
-        userRepository.disableUser(cpf);
-    }
-
-    public void enableUser(String token){
-
-        String cpf = extractCpfFromToken(token);
-
-        userRepository.enableUser(cpf);
+            userRepository.disableUser(user.getCpf());
+        }
     }
 
     private LocalDate verifyAgeIsValidOrThrowIllegalArgumentException(String birthDate) {
@@ -167,12 +164,6 @@ public class UserService {
             response.setCpf(user.getCpf());
             return response;
         }).toList();
-    }
-
-
-    private String extractCpfFromToken(String token) {
-
-        return tokenService.validateToken(token.replace("Bearer ", ""));
     }
 
 }

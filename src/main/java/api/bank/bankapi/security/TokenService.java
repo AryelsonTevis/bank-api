@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 
 @Log4j2
 @Service
@@ -53,7 +54,7 @@ public class TokenService {
 
     private Instant genExpirationDate(){
 
-        return LocalDateTime.now().plusMinutes(20).toInstant(ZoneOffset.of("-03:00"));
+        return Instant.now().plus(20, ChronoUnit.MINUTES);
     }
 
     public boolean chekPermissionToCreateUserAdmin(String permission){

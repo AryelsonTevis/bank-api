@@ -21,17 +21,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TransferService {
 
-    @Autowired
-    private TokenService tokenService;
-
     private final TransferRepository transferRepository;
 
     private final AccountRepository accountRepository;
 
-    private final UserRepository userRepository;
-
-    public List<BankStatementResponse> getBankStatement(String token) {
-        String cpf = extractCpfFromToken(token);
+    public List<BankStatementResponse> getBankStatement(Users user) {
+        String cpf = user.getCpf();
 
         Long userAccountId = accountRepository.findByCpf(cpf).getId();
 
@@ -46,7 +41,7 @@ public class TransferService {
 
                 response.setTitle("Transferido");
 
-                response.setAmount("-" + DecimalMoneyResponse.formatDecimal(tr.getAmount()));
+                response.setAmount(tr.getAmount());
 
                 response.setCpfFromAccount(FormatCpfResponse.formatCpfResponse(accountTarget.getUsers().getCpf()));
 
@@ -60,7 +55,7 @@ public class TransferService {
 
                 response.setTitle("Recebido");
 
-                response.setAmount("+" + DecimalMoneyResponse.formatDecimal(tr.getAmount()));
+                response.setAmount(tr.getAmount());
 
                 response.setCpfFromAccount(FormatCpfResponse.formatCpfResponse(accountOrigin.getUsers().getCpf()));
 
@@ -69,14 +64,9 @@ public class TransferService {
                 response.setDate(tr.getDate());
             }
 
-
             return response;
 
         }).toList();
     }
 
-    private String extractCpfFromToken(String token) {
-
-        return tokenService.validateToken(token.replace("Bearer ", ""));
-    }
 }

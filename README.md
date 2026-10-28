@@ -16,22 +16,21 @@ API REST desenvolvida com Spring Boot para estudo de conceitos de backend, com C
 ### User (`/User`)
 | Método | Rota | Descrição |
 |--------|------|-----------|
-| POST | `/User/register` | Cria um novo Usuario |
-| POST | `/User/login` | Loga o Usuario |
-| PATCH | `/User/disable_user` | Desativa o Usuario |
-| PATCH | `/User/enable_user` | Ativa o Usuario |
-| POST | `/User/register_admin` | Cria o Usuario com permisão ADMIN |
+| POST | `/users` | Cria um novo Usuario |
+| POST | `/users/login` | Loga o Usuario |
+| PATCH | `/users/staus` | Desativa eativa o Usuario |
+| POST | `/users/register_admin` | Cria o Usuario com permisão ADMIN |
 
-### Account (`/User/Account`)
+### Account (`/accounts`)
 | Método | Rota | Descrição |
 |--------|------|-----------|
-| POST | `/User/Account/account_transfer_info` | Procura o usuario alvo |
-| PATCH | `/User/Account/transfer` | Transfere o valor |
+| GET | `/accounts/search` | Procura o usuario alvo |
+| PATCH | `/accounts/transfer` | Transfere o valor |
 
-### Transfer (`/User/bank_statement`)
+### Transfer (`/users/bank_statement`)
 | Método | Rota | Descrição |
 |--------|------|-----------|
-| GET | `/User/bank_statement` | Retorna as transferencia feitas na conta |
+| GET | `/users/bank_statement` | Retorna as transferencia feitas na conta |
 
 
 O projeto também conta com um `RestExceptionHandler` global para retornar respostas de erro padronizadas (validação, bad request, etc.).

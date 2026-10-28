@@ -1,5 +1,6 @@
 package api.bank.bankapi.DTO;
 
+import jakarta.validation.constraints.Digits;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class TransferResponse {
 
+    @Digits(integer = 12, fraction = 2)
     private BigDecimal amount;
 
     private String date;

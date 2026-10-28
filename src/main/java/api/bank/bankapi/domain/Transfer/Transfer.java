@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -34,7 +35,7 @@ public class Transfer {
     @NotNull(message = "Amount cannot be null")
     private BigDecimal amount;
 
-    private String date;
+    private LocalDateTime date;
 
     private BigDecimal accountOriginBalanceBefore;
 

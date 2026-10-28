@@ -1,9 +1,12 @@
 package api.bank.bankapi.DTO;
 
+import jakarta.validation.constraints.Digits;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -15,7 +18,9 @@ public class UserResponse {
 
     private String cpf;
 
-    private String balance;
+    @Digits(integer = 12, fraction = 2)
+    private BigDecimal balance;
 
-    private String credit;
+    @Digits(integer = 12, fraction = 2)
+    private BigDecimal credit;
 }

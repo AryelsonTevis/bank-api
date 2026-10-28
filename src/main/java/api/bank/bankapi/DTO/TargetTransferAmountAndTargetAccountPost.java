@@ -1,10 +1,7 @@
 package api.bank.bankapi.DTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +17,8 @@ import java.math.BigDecimal;
 public class TargetTransferAmountAndTargetAccountPost {
     @NotNull(message = "Enter the amount to transfer")
     @Schema(description = "This is the amount for the transfer", example = "10.01")
+    @Positive(message = "The amount cannot be zero")
+    @Digits(integer = 12, fraction = 2)
     private BigDecimal amount;
 
     @NotEmpty(message = "Cpf cannot be empty")

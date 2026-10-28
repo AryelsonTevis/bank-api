@@ -40,23 +40,22 @@ public class AccountService {
 
     private final TransferRepository transferRepository;
 
-    public AccountUserResponse getTargetInfo(String token, TargetTransferAccountPost transferAccountPost) {
+    public AccountUserResponse getTargetInfo(Users user, TargetTransferAccountPost transferAccountPost) {
 
         Users accountTarget = userRepository.findByCpfAndActive(formatCpf(transferAccountPost.getCpf()) , UserStatus.ENABLED);
-        String cpfOrigin = extractOriginCpfFromToken(token);
+        String cpfOrigin = user.getCpf();
 
         if (accountTarget == null) throw new IllegalArgumentException("The target account does not exist or is disabled");
         if(accountTarget.getCpf().equals(cpfOrigin)) throw new IllegalArgumentException("Users can't be the same");
-        if (accountTarget != null) return AccountUserResponse.builder()
+        return AccountUserResponse.builder()
                 .name(accountTarget.getName())
                 .cpf(FormatCpfResponse.formatCpfResponse(accountTarget.getCpf())).build();
-        throw new IllegalArgumentException("User not found");
     }
 
     @Transactional
-    public UserResponse responseToTransferAttempt(String token, TargetTransferAmountAndTargetAccountPost targetTransferAmountPost) {
-        String cpfOrigin = extractOriginCpfFromToken(token);
+    public UserResponse responseToTransferAttempt(Users user, TargetTransferAmountAndTargetAccountPost targetTransferAmountPost) {
 
+        String cpfOrigin = user.getCpf();
 
         Users userOrigin = userRepository.findByCpfAndActive(cpfOrigin,  UserStatus.ENABLED);
 
@@ -66,18 +65,24 @@ public class AccountService {
 
         if (userTarget == null) throw new IllegalArgumentException("User Target not found or is disabled");
 
-        Account accountOrigin = accountRepository.findByCpf(userOrigin.getCpf());
+        if (userOrigin.getCpf() == userTarget.getCpf()) throw new IllegalArgumentException("Users can't be the same");
 
-        Account accountTarget = accountRepository.findByCpf(userTarget.getCpf());
+        boolean originFirst = cpfOrigin.compareTo(userTarget.getCpf()) < 0;
 
-        if (userOrigin.equals(userTarget)) throw new IllegalArgumentException("Users can't be the same");
+        Account first  = accountRepository.findByCpfForUpdate(originFirst ? cpfOrigin : userTarget.getCpf());
+
+        Account second = accountRepository.findByCpfForUpdate(originFirst ? userTarget.getCpf() : cpfOrigin);
+
+        Account accountOrigin = originFirst ? first : second;
+
+        Account accountTarget = originFirst ? second : first;
 
         if (verifyAmount(accountOrigin, targetTransferAmountPost.getAmount())) {
             Transfer transfer = Transfer.builder()
                     .originAccount(accountOrigin)
                     .targetAccount(accountTarget)
                     .amount(targetTransferAmountPost.getAmount())
-                    .date(dtf.format(LocalDateTime.now(ZoneId.of("UTC"))))
+                    .date(LocalDateTime.now())
                     .accountOriginBalanceBefore(accountOrigin.getBalance())
                     .accountOriginBalanceAfter(accountOrigin.getBalance().subtract(targetTransferAmountPost.getAmount()))
                     .accountTargetBalanceBefore(accountTarget.getBalance())
@@ -97,8 +102,8 @@ public class AccountService {
         return UserResponse.builder()
                 .name(userOrigin.getName())
                 .cpf(userOrigin.getCpf())
-                .balance(DecimalMoneyResponse.formatDecimal(accountOrigin.getBalance()))
-                .credit(DecimalMoneyResponse.formatDecimal(accountOrigin.getCreditLimit())).build();
+                .balance(accountOrigin.getBalance())
+                .credit(accountOrigin.getCreditLimit()).build();
     }
 
     private boolean verifyAmount(Account originAccount, BigDecimal amount) {
@@ -113,7 +118,4 @@ public class AccountService {
 
     }
 
-    private String extractOriginCpfFromToken(String token) {
-        return tokenService.validateToken(token.replace("Bearer ", ""));
-    }
 }

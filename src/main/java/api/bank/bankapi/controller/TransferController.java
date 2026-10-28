@@ -1,11 +1,13 @@
 package api.bank.bankapi.controller;
 
 import api.bank.bankapi.DTO.BankStatementResponse;
+import api.bank.bankapi.domain.user.Users;
 import api.bank.bankapi.service.TransferService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +23,8 @@ public class TransferController {
 
     @GetMapping
     @Operation(summary = "Get bank_statement")
-    public ResponseEntity<List<BankStatementResponse>> getBankStatement(@RequestHeader("Authorization") String token){
-        return new ResponseEntity<>(transferService.getBankStatement(token), HttpStatus.OK);
+    public ResponseEntity<List<BankStatementResponse>> getBankStatement(@AuthenticationPrincipal Users user){
+        return new ResponseEntity<>(transferService.getBankStatement(user), HttpStatus.OK);
     }
 
 }

@@ -35,11 +35,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 
             var subject = tokenService.validateToken(token);
 
-            if (subject == null) throw new AuthenticationServiceException("Invalid Token");
+            if (subject.isEmpty()) throw new AuthenticationServiceException("Invalid Token");
 
             UserDetails user = userRepository.findByCpf(subject);
-
-            if (user == null) throw new AuthenticationServiceException("User not found");
 
             var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
